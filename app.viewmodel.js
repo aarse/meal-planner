@@ -80,14 +80,18 @@ var MealPlanner = function() {
 	self.searchText = ko.observable().extend({ throttle: 500 });
 	self.searchResults = ko.observableArray();
 	self.searching = ko.observable(false);
+	self.showResults = ko.observable(false);
 	self.search = function( text ) {
 		self.searching(true);
+		self.showResults(false);
 		doCORSRequest({
 	        method: 'GET',
 	        url: 'https://toh.test.rda.net/wp-json/wp/v2/recipe/?search=' + text // www is cached by varnish...
 	      }, function printResult(result) {
-	      	self.searchResults(JSON.parse(result));
+	      	recipes = JSON.parse(result);
+	      	self.searchResults(recipes);
 			self.searching(false);
+			self.showResults(recipes.length>0)
 	      });
 	}
 	self.searchText.subscribe(self.search);
@@ -125,6 +129,7 @@ var MealPlanner = function() {
 						if ( unit || amount ) {
 							if ( ! (ingredient_name + unit in ingredients) ) {
 								ingredients[ingredient_name + unit] = ingredient_info;
+								ingredients[ingredient_name + unit].ingredient = ingredient_name;
 								ingredients[ingredient_name + unit].amount = 0;
 								ingredients[ingredient_name + unit].unit = unit;
 							}

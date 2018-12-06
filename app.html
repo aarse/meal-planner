@@ -1,39 +1,140 @@
 <script src="node_modules/knockout/build/output/knockout-latest.js"></script>
 <script src="node_modules/knockout-dragdrop/lib/knockout.dragdrop.js"></script>
 <script src="parser.js"></script>
+
 <link rel="stylesheet" href="app.css">
-<div id="recipes">
-	<input type="search" value="muffins" data-bind="value:searchText,valueUpdate:'input'">
 
-	<ul data-bind="foreach:searchResults">
-		<li data-bind="text:rms_legacy_data.ModTitle, dragZone: { name: 'recipes' }">Blueberry muffins</li>
-	</ul>
+<header class="app-header">
+	<div id="app-logo"></div>
+	<div id="toh-logo"></div>
+	<div id="user"></div>
+</header>
+<main>
+	<div id="recipes">
+		<input type="search" value="muffins" data-bind="value:searchText,valueUpdate:'input'">
 
-</div>
-<div id="calendar">
-	<table>
-		<thead>
-			<tr>
-				<th>Day</th>
-				<!-- ko foreach:meals -->
-					<th data-bind="text: $data">Breakfast</th>
-				<!-- /ko -->
-			</tr>
-		</thead>
-		<tbody data-bind="foreach: days">
-			<tr>
-				<th data-bind="text: $data"></th>
-				<!-- ko foreach:$parent.meals -->
-					<td>
-						<ul data-bind="foreach:$root.recipes[$parent][$data],dropZone: { accepts: 'recipes', drop: $root.drop, data: { day: $parent, meal: $data } }">
-							<li data-bind="text:rms_legacy_data.ModTitle"></li>
-						</ul>
-					</td>
-				<!-- /ko -->
-			</tr>
-		</tbody>
-	</table>
-</div>
+		<div class="results">
+			<!-- ko if:searching -->
+				<ul class="searching">
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+					<li class="search-result">
+						<div class="img"></div>
+						<div class="details">
+							<b class="title"></b>
+							<p class="info"></p>
+						</div>
+					</li>
+				</ul>
+			<!-- /ko -->
+
+			<!-- ko if:showResults -->
+				<ul data-bind="foreach:searchResults">
+					<li class="search-result" data-bind="dragZone: { name: 'recipes' }">
+						<div class="img" data-bind="style: { backgroundImage: 'url(\'' + rms_legacy_data.GoogleImage4x3 + '\')' }"></div>
+						<div class="details">
+							<b class="title" data-bind="text:rms_legacy_data.ModTitle"></b>
+							<p class="info" data-bind="text: rms_legacy_data.PrintableTimeCallout"></p>
+						</div>
+					</li>
+				</ul>
+			<!-- /ko -->
+		</div>
+
+	</div>
+	<div id="calendar">
+		<table>
+			<thead>
+				<tr>
+					<th>Day</th>
+					<!-- ko foreach:meals -->
+						<th data-bind="text: $data">Breakfast</th>
+					<!-- /ko -->
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: days">
+				<tr>
+					<th data-bind="text: $data"></th>
+					<!-- ko foreach:$parent.meals -->
+						<td>
+							<ul data-bind="foreach:$root.recipes[$parent][$data],dropZone: { accepts: 'recipes', drop: $root.drop, data: { day: $parent, meal: $data } }">
+								<li class="search-result" data-bind="dragZone: { name: 'recipes' }">
+									<div class="img" data-bind="style: { backgroundImage: 'url(\'' + rms_legacy_data.GoogleImage4x3 + '\')' }"></div>
+									<div class="details">
+										<b class="title" data-bind="text:rms_legacy_data.ModTitle"></b>
+										<p class="info" data-bind="text: rms_legacy_data.PrintableTimeCallout"></p>
+									</div>
+								</li>
+							</ul>
+						</td>
+					<!-- /ko -->
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</main>
+
 <div id="shopping-list" class="collapsed">
 	<header data-bind="click: toggleShoppingList">Shopping List</header>
 	<section id="ingredients">
@@ -42,4 +143,5 @@
 		</ul>
 	</section>
 </div>
+
 <script src="app.viewmodel.js"></script>
