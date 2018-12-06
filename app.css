@@ -1,0 +1,26 @@
+body > div { float: left }
+#recipes {width: 30%}
+#calendar { width: 70%;}
+table { width: 100%; border-collapse: collapse; }
+table td, table th { border: 1px solid black}
+table td { padding: 0; }
+table td ul { min-height: 60px; }
+tbody tr th { text-align: left }
+
+#ingredients {
+	background: white;
+}
+#shopping-list.collapsed #ingredients {
+	display: none;
+}
+
+#shopping-list {
+	position: fixed;
+	bottom: 0; right: 0;
+}
+
+#shopping-list header {
+	background: black; color: white;
+	width: 300px;
+	padding: 1em;
+}

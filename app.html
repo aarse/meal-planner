@@ -1,0 +1,45 @@
+<script src="node_modules/knockout/build/output/knockout-latest.js"></script>
+<script src="node_modules/knockout-dragdrop/lib/knockout.dragdrop.js"></script>
+<script src="parser.js"></script>
+<link rel="stylesheet" href="app.css">
+<div id="recipes">
+	<input type="search" value="muffins" data-bind="value:searchText,valueUpdate:'input'">
+
+	<ul data-bind="foreach:searchResults">
+		<li data-bind="text:rms_legacy_data.ModTitle, dragZone: { name: 'recipes' }">Blueberry muffins</li>
+	</ul>
+
+</div>
+<div id="calendar">
+	<table>
+		<thead>
+			<tr>
+				<th>Day</th>
+				<!-- ko foreach:meals -->
+					<th data-bind="text: $data">Breakfast</th>
+				<!-- /ko -->
+			</tr>
+		</thead>
+		<tbody data-bind="foreach: days">
+			<tr>
+				<th data-bind="text: $data"></th>
+				<!-- ko foreach:$parent.meals -->
+					<td>
+						<ul data-bind="foreach:$root.recipes[$parent][$data],dropZone: { accepts: 'recipes', drop: $root.drop, data: { day: $parent, meal: $data } }">
+							<li data-bind="text:rms_legacy_data.ModTitle"></li>
+						</ul>
+					</td>
+				<!-- /ko -->
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div id="shopping-list" class="collapsed">
+	<header data-bind="click: toggleShoppingList">Shopping List</header>
+	<section id="ingredients">
+		<ul data-bind="foreach: shoppingList">
+			<li><input type="checkbox"><span data-bind="text:ingredient"></span> - <span data-bind="text: amount"></span> <span data-bind="text: unit"></span></li>
+		</ul>
+	</section>
+</div>
+<script src="app.viewmodel.js"></script>
