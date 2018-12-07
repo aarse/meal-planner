@@ -1,7 +1,7 @@
 /**
  * Helpers
  */
-var ingredients_api_url = 'https://aarse.cf/';
+var ingredients_api_url = 'http://localhost:8080/';
 
 // Bypass CORS
 var cors_api_url = 'https://cors-anywhere.herokuapp.com/';
@@ -132,8 +132,8 @@ var MealPlanner = function() {
 	self.allIngredients.subscribe(function(ingredients){
 		self.shoppingListLoading(true);
 		requestShoppingList(ingredients).then(function(shopping_list){
-			if (Array.isArray(JSON.parse(shopping_list))) {
-				self.shoppingList(JSON.parse(shopping_list));
+			if (Array.isArray(shopping_list)) {
+				self.shoppingList(shopping_list);
 			} else {
 				self.shoppingList([]);
 			}
