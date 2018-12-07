@@ -6,13 +6,12 @@
 <link rel="stylesheet" href="app.css">
 
 <header class="app-header">
-	<div id="app-logo"></div>
-	<div id="toh-logo"></div>
+	<img src="logo.png" alt="MealMate" id="logo">
 	<div id="user"></div>
 </header>
 <main>
 	<div id="recipes">
-		<input type="search" value="muffins" data-bind="value:searchText,valueUpdate:'input'">
+		<input type="search" placeholder="Search Taste of Home recipes!" data-bind="value:searchText,valueUpdate:'input'">
 
 		<div class="results">
 			<!-- ko if:searching -->
@@ -138,11 +137,18 @@
 
 <div id="shopping-list" class="collapsed">
 	<header data-bind="click: toggleShoppingList">Shopping List</header>
+	<!-- ko ifnot: shoppingListEmpty -->
 	<section id="ingredients">
 		<ul data-bind="foreach: shoppingList">
 			<li><input type="checkbox"><span data-bind="text:name"></span> - <span data-bind="text: amount"></span> <span data-bind="text: unit"></span></li>
 		</ul>
 	</section>
+	<!-- /ko -->
+	<!-- ko if: shoppingListEmpty -->
+	<section id="ingredients">
+		Nothing to shop yet!
+	</section>
+	<!-- /ko -->
 </div>
 
 <script src="app.viewmodel.js"></script>

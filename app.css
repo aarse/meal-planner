@@ -8,6 +8,9 @@ body {
 	height: 140px;
 	margin-bottom: 52px;
 }
+#logo {
+	margin: 30px 0 0 40px;
+}
 main > div { float: left }
 #recipes {width: 470px; margin: 0 45px;}
 #calendar { width: calc(100% - 600px) }
@@ -38,7 +41,6 @@ tbody tr th {
 }
 tbody tr td {
 	width: 200px;
-	padding: .25em;
 }
 
 #ingredients {
@@ -50,13 +52,27 @@ tbody tr td {
 
 #shopping-list {
 	position: fixed;
-	bottom: 0; right: 0;
+	bottom: 0; right: 2em;
 }
 
 #shopping-list header {
-	background: black; color: white;
+	background: #0f6fb5;
+	color: white;
 	width: 300px;
 	padding: 1em;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	text-transform: uppercase;
+}
+
+#shopping-list section {
+	background: white;
+	padding: 1em;
+}
+#shopping-list ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 input[type=search] {
@@ -113,4 +129,9 @@ input[type=search] {
 #calendar ul {
 	list-style: none;
 	padding: 0;
+	margin: 0;
+}
+#calendar ul li {
+	overflow: auto;
+	margin: .25em;
 }

@@ -1,7 +1,7 @@
 /**
  * Helpers
  */
-var ingredients_api_url = 'http://localhost:8080/';
+var ingredients_api_url = 'https://aarse.cf/';
 
 // Bypass CORS
 var cors_api_url = 'https://cors-anywhere.herokuapp.com/';
@@ -129,10 +129,24 @@ var MealPlanner = function() {
 
 	self.shoppingListLoading = ko.observable(false);
 	self.shoppingList = ko.observableArray();
+	self.shoppingListEmpty = ko.computed(function(){
+		return this.shoppingList().length < 1;
+	}, self);
 	self.allIngredients.subscribe(function(ingredients){
 		self.shoppingListLoading(true);
-		requestShoppingList(ingredients).then(function(shopping_list){
-			if (Array.isArray(shopping_list)) {
+		requestShoppingList(ingredients).then(function(response){
+			if (Array.isArray(response)) {
+				// Small cleanup. @todo: move to API
+				shopping_list = response.map(function(ingredient){
+					if ( ingredient.amount == 'NAN/NAN' ) return;
+					return ingredient;
+				}).filter(Boolean).sort(function(a,b) {
+					if (a.name < b.name)
+						return -1;
+					if (a.name > b.name)
+						return 1;
+					return 0;
+				})
 				self.shoppingList(shopping_list);
 			} else {
 				self.shoppingList([]);
