@@ -1,5 +1,6 @@
-<script src="node_modules/knockout/build/output/knockout-latest.js"></script>
-<script src="node_modules/knockout-dragdrop/lib/knockout.dragdrop.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout-dragdrop/2.6.1/knockout.dragdrop.min.js"></script>
 <script src="parser.js"></script>
 
 <link rel="stylesheet" href="app.css">
@@ -139,7 +140,7 @@
 	<header data-bind="click: toggleShoppingList">Shopping List</header>
 	<section id="ingredients">
 		<ul data-bind="foreach: shoppingList">
-			<li><input type="checkbox"><span data-bind="text:ingredient"></span> - <span data-bind="text: amount"></span> <span data-bind="text: unit"></span></li>
+			<li><input type="checkbox"><span data-bind="text:name"></span> - <span data-bind="text: amount"></span> <span data-bind="text: unit"></span></li>
 		</ul>
 	</section>
 </div>

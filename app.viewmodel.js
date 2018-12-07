@@ -1,6 +1,7 @@
 /**
  * Helpers
  */
+var ingredients_api_url = 'https://aarse.cf/';
 
 // Bypass CORS
 var cors_api_url = 'https://cors-anywhere.herokuapp.com/';
@@ -44,6 +45,15 @@ function fractionToNumber(x) {
 	        return(z[0]);
 	    }
 	}
+}
+
+// Get shopping list from API server
+function requestShoppingList(ingredients) {
+	var ingredient_names = ingredients.map(function(ingredient){
+		return ingredient.Ingredient;
+	});
+	var ingredient_names_text = ingredient_names.join("\n");
+	return $.post(ingredients_api_url + '?action=shopping_list', { ingredients: ingredient_names_text });
 }
 
 /**
@@ -100,61 +110,89 @@ var MealPlanner = function() {
 	/**
 	 * Shopping List
 	 */
-	self.shoppingList = ko.computed(function(){
-	 	self.updateShoppingList();
-	 	var ingredients = {};
-	 	Object.keys(self.recipes).forEach(function (day) {
-			Object.keys(self.recipes[day]).forEach(function (meal) {
-				recipes_for_day_and_meal = self.recipes[day][meal]();
+	self.allIngredients = ko.computed(function(){
+		var that = this;
+		this.updateShoppingList();
+		var all_ingredients = [];
+	 	Object.keys(that.recipes).forEach(function (day) {
+			Object.keys(that.recipes[day]).forEach(function (meal) {
+				recipes_for_day_and_meal = that.recipes[day][meal]();
 				recipes_for_day_and_meal.forEach(function(recipe){
 					recipe.rms_legacy_data.Ingredients.forEach(function(ingredient){
-						// Some fractions are represented as "1-1/2" meaning 1 AND 1/2. Parser recognizes "1 1/2"
-						ingredient_text = ingredient.Ingredient.replace(/([0-9]+)-([0-9]+\/[0-9]+)/gm, '$1 $2')
-
-						// Parse ingredient info
-						ingredient_info = IngredientsParser.parse(ingredient_text);
-						ingredient_name = strip(ingredient_info.ingredient)
-
-						// Some ingredients don't have units (e.g. "3 eggs")
-						unit = '';
-						if ( ingredient_info && ingredient_info.unit)
-							unit = ingredient_info.unit;
-
-						// Some don't have amounts (e.g. "blueberries")
-						amount = '';
-						if (ingredient_info && ingredient_info.amount)
-							amount = ingredient_info.amount;
-
-						// Some "Ingredients" in the database are actually titles... e.g. "<b>For the topping</b>"
-						if ( unit || amount ) {
-							if ( ! (ingredient_name + unit in ingredients) ) {
-								ingredients[ingredient_name + unit] = ingredient_info;
-								ingredients[ingredient_name + unit].ingredient = ingredient_name;
-								ingredients[ingredient_name + unit].amount = 0;
-								ingredients[ingredient_name + unit].unit = unit;
-							}
-
-							if ( isNumeric(amount) ) {
-								ingredients[ingredient_name + unit].amount += parseFloat(amount);
-							} else {
-								// god help us
-								// or maybe convert fractions to floats and then back to fractions
-								ingredients[ingredient_name + unit].amount += fractionToNumber(amount);
-							}
-						}
+						all_ingredients.push(ingredient);
 					});
 				});
 			});
 		});
+		return all_ingredients;
+	}, self);
+
+	self.shoppingListLoading = ko.observable(false);
+	self.shoppingList = ko.observableArray();
+	self.allIngredients.subscribe(function(ingredients){
+		self.shoppingListLoading(true);
+		requestShoppingList(ingredients).then(function(shopping_list){
+			if (Array.isArray(JSON.parse(shopping_list))) {
+				self.shoppingList(JSON.parse(shopping_list));
+			} else {
+				self.shoppingList([]);
+			}
+			self.shoppingListLoading(false);
+		});
+	});
+
+	/*
+	self.shoppingList = ko.computed(function(){
+	 	self.updateShoppingList();
+	 	var all_ingredients = this.allIngredients();
+	 	var ingredients = {};
+	 	parseIngredients(all_ingredients);
+		all_ingredients.forEach(function(ingredient){
+			// Some fractions are represented as "1-1/2" meaning 1 AND 1/2. Parser recognizes "1 1/2"
+			ingredient_text = ingredient.Ingredient.replace(/([0-9]+)-([0-9]+\/[0-9]+)/gm, '$1 $2')
+
+			// Parse ingredient info
+			ingredient_info = IngredientsParser.parse(ingredient_text);
+			ingredient_name = strip(ingredient_info.ingredient)
+
+			// Some ingredients don't have units (e.g. "3 eggs")
+			unit = '';
+			if ( ingredient_info && ingredient_info.unit)
+				unit = ingredient_info.unit;
+
+			// Some don't have amounts (e.g. "blueberries")
+			amount = '';
+			if (ingredient_info && ingredient_info.amount)
+				amount = ingredient_info.amount;
+
+			// Some "Ingredients" in the database are actually titles... e.g. "<b>For the topping</b>"
+			if ( unit || amount ) {
+				if ( ! (ingredient_name + unit in ingredients) ) {
+					ingredients[ingredient_name + unit] = ingredient_info;
+					ingredients[ingredient_name + unit].ingredient = ingredient_name;
+					ingredients[ingredient_name + unit].amount = 0;
+					ingredients[ingredient_name + unit].unit = unit;
+				}
+
+				if ( isNumeric(amount) ) {
+					ingredients[ingredient_name + unit].amount += parseFloat(amount);
+				} else {
+					// god help us
+					// or maybe convert fractions to floats and then back to fractions
+					ingredients[ingredient_name + unit].amount += fractionToNumber(amount);
+				}
+			}
+		});
 
 		// @todo: convert back 0.3333333333 to 1/3 :)
 		return Object.values(ingredients);
-	}, self);
+	}, self);*/
 
 	// UI
 	self.toggleShoppingList = function() {
 		document.getElementById('shopping-list').classList.toggle('collapsed');
 	}
+
 	// Startup
 	self.setup();
 }

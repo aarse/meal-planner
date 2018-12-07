@@ -1,6 +1,7 @@
 body {
 	padding: 0;
 	margin: 0;
+	font-family: Helvetica, Arial, sans-serif;
 }
 .app-header {
 	background: #53a96e;
@@ -11,10 +12,34 @@ main > div { float: left }
 #recipes {width: 470px; margin: 0 45px;}
 #calendar { width: calc(100% - 600px) }
 table { width: 100%; border-collapse: collapse; }
-table td, table th { border: 1px solid black}
+table thead th {
+	background: #9acdaa;
+	color: white;
+	text-transform: uppercase;
+	border-bottom: 1px solid #6eb785;
+	padding: 1em 2em;
+}
+table thead th:first-child {
+	border-top-left-radius: 8px;
+	border: transparent;
+}
+table thead th:last-child {
+	border-top-right-radius: 8px;
+	border: transparent;
+}
+
+table td, table th { border: 1px solid #9acdaa}
 table td { padding: 0; }
-table td ul { min-height: 60px; }
-tbody tr th { text-align: left }
+table td ul { min-height: 50px; }
+tbody tr th {
+	color: #67b37f;
+	text-transform: uppercase;
+	width: 125px;
+}
+tbody tr td {
+	width: 200px;
+	padding: .25em;
+}
 
 #ingredients {
 	background: white;
